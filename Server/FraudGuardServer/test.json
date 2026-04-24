@@ -1,0 +1,50 @@
+{
+  "url": "http://amaz0n.com/secure-login/verify-account-update",
+  "final_score": 85,
+  "verdict": "DANGEROUS",
+  "color": "#F44336",
+  "simple_message": "This looks like a malicious or phishing link! Do NOT open or share any personal information.",
+  "recommendation": "Close this page immediately and report the sender.",
+  "checks": [
+    {
+      "name": "HTTPS Check",
+      "score": 20,
+      "message": "Unsafe HTTP connection detected",
+      "status": "failed",
+      "color": "red",
+      "icon": "\ud83d\udd34"
+    },
+    {
+      "name": "Lookalike Domain Check",
+      "score": 35,
+      "message": "Looks suspiciously like amazon.com",
+      "status": "failed",
+      "color": "red",
+      "icon": "\ud83d\udd34"
+    },
+    {
+      "name": "Suspicious Keywords",
+      "score": 30,
+      "message": "Found red-flag words: login, verify, secure, update, account",
+      "status": "failed",
+      "color": "red",
+      "icon": "\ud83d\udd34"
+    },
+    {
+      "name": "VirusTotal Check",
+      "score": 0,
+      "message": "Could not fetch VirusTotal report",
+      "status": "skipped",
+      "color": "gray",
+      "icon": "\u2753"
+    },
+    {
+      "name": "Google Safe Browsing",
+      "score": 0,
+      "message": "Safe browsing found no known threats",
+      "status": "success",
+      "color": "green",
+      "icon": "\u2705"
+    }
+  ]
+}

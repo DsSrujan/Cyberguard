@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="12dp"
+    android:gravity="center_vertical">
+
+    <!-- Status Icon/Emoji -->
+    <TextView
+        android:id="@+id/tvCheckIcon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:text="✅"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:background="@drawable/circle_background_light"
+        android:layout_marginEnd="16dp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvCheckName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Check Name"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvCheckMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Result message details here."
+            android:textColor="#757575"
+            android:textSize="13sp"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+
+    <!-- Score Contribution (e.g. +20) -->
+    <TextView
+        android:id="@+id/tvScoreImpact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+20"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="#D32F2F"
+        android:paddingStart="8dp" />
+
+</LinearLayout>

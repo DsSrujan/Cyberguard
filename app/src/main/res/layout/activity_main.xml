@@ -145,6 +145,36 @@
 
         </LinearLayout>
 
+        <!-- Link Inspector Tab -->
+        <LinearLayout
+            android:id="@+id/navLink"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/navLinkIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_link"
+                app:tint="#757575" />
+
+            <TextView
+                android:id="@+id/navLinkText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Link Check"
+                android:textSize="11sp"
+                android:textColor="#757575" />
+
+        </LinearLayout>
+
         <!-- AI Assistant Tab -->
         <LinearLayout
             android:id="@+id/navAI"

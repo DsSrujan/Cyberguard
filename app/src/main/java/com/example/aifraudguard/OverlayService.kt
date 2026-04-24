@@ -232,7 +232,7 @@ class OverlayService : Service(), TextToSpeech.OnInitListener {
         val requestBody = json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
 
         // ⚠️ UPDATE THIS URL TO YOUR BACKEND/NGROK REPORTING ENDPOINT
-        val url = "https://27b17b2c732a.ngrok-free.app/report-scam"
+        val url = "https://kaden-subimposed-ducally.ngrok-free.dev/report-scam"
 
         val request = Request.Builder().url(url).post(requestBody).build()
 
@@ -301,7 +301,7 @@ class OverlayService : Service(), TextToSpeech.OnInitListener {
     }
 
     private fun connectWebSocketWithCallback(onOpenCallback: () -> Unit) {
-        val ngrokHost = "27b17b2c732a.ngrok-free.app" // ⚠️ UPDATE THIS URL
+        val ngrokHost = "kaden-subimposed-ducally.ngrok-free.dev" // ⚠️ UPDATE THIS URL
         val wssUrl = "wss://$ngrokHost/app"
         val client = OkHttpClient()
         val request = Request.Builder()
@@ -314,7 +314,7 @@ class OverlayService : Service(), TextToSpeech.OnInitListener {
     private fun addAssistantBot() {
         try {
             val telecomManager = getSystemService(TelecomManager::class.java)
-            val botUri = Uri.parse("tel:+12136934461")
+            val botUri = Uri.parse("tel:+16203019759")
             telecomManager.placeCall(botUri, null)
         } catch (e: SecurityException) {
             Toast.makeText(this, "CALL_PHONE permission not granted.", Toast.LENGTH_SHORT).show()

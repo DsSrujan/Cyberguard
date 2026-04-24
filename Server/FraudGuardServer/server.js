@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -339,6 +340,32 @@ app.get('/get-reports', async (req, res) => {
         console.error('❌ Error fetching reports:', error);
         res.status(500).json({ error: 'Failed to fetch reports from the database.' });
     }
+});
+
+// --- PYTHON API PROXY ROUTE (NEW) ---
+app.post('/check-url', (req, res) => {
+    const options = {
+        hostname: '127.0.0.1',
+        port: 8000,
+        path: '/check-url',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    
+    const proxyReq = http.request(options, (proxyRes) => {
+        res.writeHead(proxyRes.statusCode, proxyRes.headers);
+        proxyRes.pipe(res, { end: true });
+    });
+    
+    proxyReq.on('error', (e) => {
+        console.error(`Python backend proxy error: ${e.message}`);
+        res.status(500).json({ error: "Failed to connect to Python backend." });
+    });
+    
+    proxyReq.write(JSON.stringify(req.body));
+    proxyReq.end();
 });
 
 // --- SERVER START ---
