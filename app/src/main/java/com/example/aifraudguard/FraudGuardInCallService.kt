@@ -66,7 +66,7 @@ class FraudGuardInCallService : InCallService() {
 
         // 2. Place the second call to your Twilio number
         val telecomManager = getSystemService(TelecomManager::class.java)
-        val botUri = Uri.parse("tel:+12136934461") // Your Twilio number
+        val botUri = Uri.parse("tel:+16203019759") // Your Twilio number
 
         // This command places the call. The onCallAdded function will be triggered again
         // when this new call is created by the system.

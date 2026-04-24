@@ -9,6 +9,7 @@
   "dependencies": {
     "axios": "^1.12.2",
     "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
     "express": "^4.21.2",
     "microsoft-cognitiveservices-speech-sdk": "^1.46.0",
     "mongoose": "^8.19.1",

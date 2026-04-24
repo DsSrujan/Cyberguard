@@ -87,6 +87,10 @@ dependencies {
     // Gson for JSON parsing
     implementation("com.google.code.gson:gson:2.10.1")
     
+    // Retrofit2 for API calls
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    
     // ViewPager2 for swipeable pages
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 

@@ -100,32 +100,50 @@ class MainActivity : AppCompatActivity() {
             binding.viewPager.setCurrentItem(0, true)
         }
         
-        binding.navAI.setOnClickListener {
+        binding.navLink.setOnClickListener {
             binding.viewPager.setCurrentItem(1, true)
+        }
+        
+        binding.navAI.setOnClickListener {
+            binding.viewPager.setCurrentItem(2, true)
         }
     }
     
     private fun updateBottomNavigation(position: Int) {
+        val primary = ContextCompat.getColor(this, R.color.primary)
+        val gray = ContextCompat.getColor(this, R.color.gray)
+        val bold = android.graphics.Typeface.BOLD
+        val normal = android.graphics.Typeface.NORMAL
+
+        // Reset all to gray/normal
+        binding.navNewsIcon.setColorFilter(gray)
+        binding.navNewsText.setTextColor(gray)
+        binding.navNewsText.setTypeface(null, normal)
+
+        binding.navLinkIcon.setColorFilter(gray)
+        binding.navLinkText.setTextColor(gray)
+        binding.navLinkText.setTypeface(null, normal)
+
+        binding.navAIIcon.setColorFilter(gray)
+        binding.navAIText.setTextColor(gray)
+        binding.navAIText.setTypeface(null, normal)
+
+        // Highlight selected
         when (position) {
             0 -> {
-                // News tab selected
-                binding.navNewsIcon.setColorFilter(ContextCompat.getColor(this, R.color.primary))
-                binding.navNewsText.setTextColor(ContextCompat.getColor(this, R.color.primary))
-                binding.navNewsText.setTypeface(null, android.graphics.Typeface.BOLD)
-                
-                binding.navAIIcon.setColorFilter(ContextCompat.getColor(this, R.color.gray))
-                binding.navAIText.setTextColor(ContextCompat.getColor(this, R.color.gray))
-                binding.navAIText.setTypeface(null, android.graphics.Typeface.NORMAL)
+                binding.navNewsIcon.setColorFilter(primary)
+                binding.navNewsText.setTextColor(primary)
+                binding.navNewsText.setTypeface(null, bold)
             }
             1 -> {
-                // AI Assistant tab selected
-                binding.navAIIcon.setColorFilter(ContextCompat.getColor(this, R.color.primary))
-                binding.navAIText.setTextColor(ContextCompat.getColor(this, R.color.primary))
-                binding.navAIText.setTypeface(null, android.graphics.Typeface.BOLD)
-                
-                binding.navNewsIcon.setColorFilter(ContextCompat.getColor(this, R.color.gray))
-                binding.navNewsText.setTextColor(ContextCompat.getColor(this, R.color.gray))
-                binding.navNewsText.setTypeface(null, android.graphics.Typeface.NORMAL)
+                binding.navLinkIcon.setColorFilter(primary)
+                binding.navLinkText.setTextColor(primary)
+                binding.navLinkText.setTypeface(null, bold)
+            }
+            2 -> {
+                binding.navAIIcon.setColorFilter(primary)
+                binding.navAIText.setTextColor(primary)
+                binding.navAIText.setTypeface(null, bold)
             }
         }
     }
