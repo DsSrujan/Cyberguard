@@ -36,11 +36,11 @@
 
     </LinearLayout>
 
-    <!-- Divider -->
+    <!-- Divider Removed for cleaner look -->
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E0E0E0" />
+        android:layout_height="8dp"
+        android:background="#F8FAFC" />
 
     <!-- Chat RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
@@ -59,9 +59,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="12dp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="16dp"
         android:background="@android:color/white"
-        android:elevation="4dp">
+        android:elevation="24dp">
 
         <EditText
             android:id="@+id/messageInput"
