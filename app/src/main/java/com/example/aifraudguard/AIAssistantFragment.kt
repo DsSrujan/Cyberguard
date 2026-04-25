@@ -89,14 +89,14 @@ class AIAssistantFragment : Fragment() {
         if (userMessage.isBlank()) return
 
         // Disable input to prevent spam (429 errors)
-        binding.sendButton.isEnabled = false
-        binding.messageInput.isEnabled = false
+        sendButton.isEnabled = false
+        messageInput.isEnabled = false
 
         // Add user message
         val userChatMessage = ChatMessage(text = userMessage, isUser = true)
         chatAdapter.addMessage(userChatMessage)
         chatRecyclerView.scrollToPosition(messages.size - 1)
-        binding.messageInput.setText("")
+        messageInput.setText("")
 
         // Check if API key is configured
         if (ApiConfig.GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE" || ApiConfig.GEMINI_API_KEY.isBlank()) {
@@ -105,8 +105,8 @@ class AIAssistantFragment : Fragment() {
                 isUser = false
             )
             chatAdapter.addMessage(errorMessage)
-            binding.sendButton.isEnabled = true
-            binding.messageInput.isEnabled = true
+            sendButton.isEnabled = true
+            messageInput.isEnabled = true
             return
         }
 
@@ -129,8 +129,8 @@ class AIAssistantFragment : Fragment() {
                 chatRecyclerView.scrollToPosition(messages.size - 1)
             } finally {
                 // Re-enable input
-                binding.sendButton.isEnabled = true
-                binding.messageInput.isEnabled = true
+                sendButton.isEnabled = true
+                messageInput.isEnabled = true
             }
         }
     }
