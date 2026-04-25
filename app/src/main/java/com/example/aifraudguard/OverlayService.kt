@@ -232,7 +232,7 @@ class OverlayService : Service(), TextToSpeech.OnInitListener {
         val requestBody = json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
 
         // ⚠️ UPDATE THIS URL TO YOUR BACKEND/NGROK REPORTING ENDPOINT
-        val url = "https://kaden-subimposed-ducally.ngrok-free.dev/report-scam"
+        val url = "https://unfundamental-eagerly-mireille.ngrok-free.dev/report-scam"
 
         val request = Request.Builder().url(url).post(requestBody).build()
 
@@ -301,7 +301,7 @@ class OverlayService : Service(), TextToSpeech.OnInitListener {
     }
 
     private fun connectWebSocketWithCallback(onOpenCallback: () -> Unit) {
-        val ngrokHost = "kaden-subimposed-ducally.ngrok-free.dev" // ⚠️ UPDATE THIS URL
+        val ngrokHost = "unfundamental-eagerly-mireille.ngrok-free.dev" // ⚠️ UPDATE THIS URL
         val wssUrl = "wss://$ngrokHost/app"
         val client = OkHttpClient()
         val request = Request.Builder()
