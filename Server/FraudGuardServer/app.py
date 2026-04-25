@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+ from flask import Flask, request, jsonify
 from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification
 import torch
 import torch.nn.functional as F
