@@ -67,6 +67,17 @@ class MainActivity : AppCompatActivity() {
 
         // User authenticated, show normal UI
         binding.welcomeText.text = "Welcome, $userName"
+        
+        // Load profile photo into the top-right header icon
+        AuthHelper.getCurrentUser()?.photoUrl?.let { photoUrl ->
+            com.bumptech.glide.Glide.with(this)
+                .load(photoUrl)
+                .placeholder(R.drawable.ic_person)
+                .error(R.drawable.ic_person)
+                .circleCrop()
+                .into(binding.profileIcon)
+        }
+
         binding.profileIcon.setOnClickListener {
             showProfileDialog()
         }

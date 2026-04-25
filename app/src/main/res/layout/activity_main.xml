@@ -37,13 +37,14 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/profile_icon_background" />
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/profileIcon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="4dp"
                 android:src="@drawable/ic_person"
                 android:contentDescription="User Profile"
+                app:shapeAppearanceOverlay="@style/CircleImageView"
                 app:tint="@android:color/white" />
 
         </FrameLayout>
@@ -135,7 +136,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_news"
-                app:tint="#1976D2" />
+                app:tint="@color/primary" />
 
             <TextView
                 android:id="@+id/navNewsText"
@@ -144,7 +145,7 @@
                 android:layout_marginTop="4dp"
                 android:text="News"
                 android:textSize="11sp"
-                android:textColor="#1976D2"
+                android:textColor="@color/primary"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -235,7 +236,7 @@
                 android:layout_marginTop="4dp"
                 android:text="Msg Scan"
                 android:textSize="11sp"
-                android:textColor="#757575" />
+                android:textColor="@color/gray" />
 
         </LinearLayout>
 

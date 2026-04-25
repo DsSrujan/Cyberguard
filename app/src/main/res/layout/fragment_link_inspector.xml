@@ -161,10 +161,11 @@
                             android:id="@+id/scoreProgress"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            app:indicatorSize="120dp"
-                            app:trackThickness="10dp"
-                            app:trackColor="#EEEEEE"
-                            app:indicatorColor="#4CAF50"
+                            android:layout_gravity="center"
+                            app:indicatorSize="110dp"
+                            app:trackThickness="8dp"
+                            app:trackColor="#F1F5F9"
+                            app:indicatorColor="@color/primary"
                             android:max="100"
                             android:progress="0" />
 
@@ -226,30 +227,29 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         android:layout_marginTop="24dp"
-                        android:layout_marginHorizontal="16dp"
-                        android:weightSum="2">
+                        android:layout_marginHorizontal="16dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnShareWarning"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:text="Share Security Warning"
+                            android:textStyle="bold"
+                            app:cornerRadius="12dp"
+                            android:backgroundTint="@color/danger_red" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnReportUrl"
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="0dp"
-                            android:layout_height="52dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="8dp"
-                            android:text="Report URL"
-                            app:strokeColor="#1976D2"
-                            android:textColor="#1976D2" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnShareWarning"
-                            android:layout_width="0dp"
-                            android:layout_height="52dp"
-                            android:layout_weight="1"
-                            android:layout_marginStart="8dp"
-                            android:text="Share Warning"
-                            android:backgroundTint="#6200EE" />
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_marginTop="12dp"
+                            android:text="Report Malicious Link"
+                            app:strokeColor="@color/primary"
+                            app:cornerRadius="12dp"
+                            android:textColor="@color/primary" />
 
                     </LinearLayout>
 
