@@ -209,6 +209,36 @@
 
         </LinearLayout>
 
+        <!-- Message Scan Tab -->
+        <LinearLayout
+            android:id="@+id/navMsgScan"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/navMsgScanIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_message"
+                app:tint="#757575" />
+
+            <TextView
+                android:id="@+id/navMsgScanText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Msg Scan"
+                android:textSize="11sp"
+                android:textColor="#757575" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
