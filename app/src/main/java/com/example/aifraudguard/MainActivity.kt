@@ -47,8 +47,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         
         // Check authentication BEFORE inflating layout
-        // Auth check bypassed for testing
-        /*
         if (!AuthHelper.isUserAuthenticated()) {
             val intent = Intent(this, AuthActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -56,7 +54,6 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
-        */
         
         // Inflate the layout using View Binding
         binding = ActivityMainBinding.inflate(layoutInflater)
