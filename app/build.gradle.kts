@@ -22,8 +22,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
-        // Load API keys from properties file
-        val apiKeysFile = rootProject.file("apikeys.properties")
+        // Load API keys from properties file securely
+        val apiKeysFile = rootProject.file("local.properties")
         if (apiKeysFile.exists()) {
             val apiKeys = Properties()
             apiKeys.load(FileInputStream(apiKeysFile))
