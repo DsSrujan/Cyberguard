@@ -47,14 +47,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         
         // Check authentication BEFORE inflating layout
+        // Auth check bypassed for testing
+        /*
         if (!AuthHelper.isUserAuthenticated()) {
-            // User not authenticated, redirect to AuthActivity
             val intent = Intent(this, AuthActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
             return
         }
+        */
         
         // Inflate the layout using View Binding
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -62,9 +64,9 @@ class MainActivity : AppCompatActivity() {
 
         // Get user data from SharedPreferences (will be set after authentication)
         val sharedPrefs = getSharedPreferences("FraudGuardPrefs", MODE_PRIVATE)
-        userName = sharedPrefs.getString("USER_NAME", null) ?: ""
-        userPhone = sharedPrefs.getString("USER_PHONE_NUMBER", null) ?: ""
-        userEmail = sharedPrefs.getString("USER_EMAIL", null) ?: ""
+        userName = sharedPrefs.getString("USER_NAME", null) ?: "Guest User"
+        userPhone = sharedPrefs.getString("USER_PHONE_NUMBER", null) ?: "N/A"
+        userEmail = sharedPrefs.getString("USER_EMAIL", null) ?: "guest@cyberguard.com"
 
         // User authenticated, show normal UI
         binding.welcomeText.text = "Welcome, $userName"
@@ -107,6 +109,10 @@ class MainActivity : AppCompatActivity() {
         binding.navAI.setOnClickListener {
             binding.viewPager.setCurrentItem(2, true)
         }
+
+        binding.navMsgScan.setOnClickListener {
+            binding.viewPager.setCurrentItem(3, true)
+        }
     }
     
     private fun updateBottomNavigation(position: Int) {
@@ -115,7 +121,7 @@ class MainActivity : AppCompatActivity() {
         val bold = android.graphics.Typeface.BOLD
         val normal = android.graphics.Typeface.NORMAL
 
-        // Reset all to gray/normal
+        // Reset all tabs to gray/normal
         binding.navNewsIcon.setColorFilter(gray)
         binding.navNewsText.setTextColor(gray)
         binding.navNewsText.setTypeface(null, normal)
@@ -128,7 +134,11 @@ class MainActivity : AppCompatActivity() {
         binding.navAIText.setTextColor(gray)
         binding.navAIText.setTypeface(null, normal)
 
-        // Highlight selected
+        binding.navMsgScanIcon.setColorFilter(gray)
+        binding.navMsgScanText.setTextColor(gray)
+        binding.navMsgScanText.setTypeface(null, normal)
+
+        // Highlight selected tab
         when (position) {
             0 -> {
                 binding.navNewsIcon.setColorFilter(primary)
@@ -144,6 +154,11 @@ class MainActivity : AppCompatActivity() {
                 binding.navAIIcon.setColorFilter(primary)
                 binding.navAIText.setTextColor(primary)
                 binding.navAIText.setTypeface(null, bold)
+            }
+            3 -> {
+                binding.navMsgScanIcon.setColorFilter(primary)
+                binding.navMsgScanText.setTextColor(primary)
+                binding.navMsgScanText.setTypeface(null, bold)
             }
         }
     }

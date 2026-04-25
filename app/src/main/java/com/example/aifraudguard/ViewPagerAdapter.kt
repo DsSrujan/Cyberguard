@@ -6,13 +6,14 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class ViewPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
 
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = 4
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> NewsFragment()         // Left page - News Feed
-            1 -> LinkInspectorFragment() // Middle page - Link Check
-            2 -> AIAssistantFragment()  // Right page - AI Assistant
+            0 -> NewsFragment()           // News Feed
+            1 -> LinkInspectorFragment()  // Link Check
+            2 -> AIAssistantFragment()    // AI Assistant
+            3 -> MessageScanFragment()    // Message Fraud Scanner
             else -> NewsFragment()
         }
     }
