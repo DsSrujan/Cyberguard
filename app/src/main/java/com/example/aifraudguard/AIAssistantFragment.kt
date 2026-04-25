@@ -86,23 +86,31 @@ class AIAssistantFragment : Fragment() {
     }
 
     private fun sendMessage(userMessage: String) {
+        if (userMessage.isBlank()) return
+
+        // Disable input to prevent spam (429 errors)
+        binding.sendButton.isEnabled = false
+        binding.messageInput.isEnabled = false
+
         // Add user message
         val userChatMessage = ChatMessage(text = userMessage, isUser = true)
         chatAdapter.addMessage(userChatMessage)
         chatRecyclerView.scrollToPosition(messages.size - 1)
+        binding.messageInput.setText("")
 
         // Check if API key is configured
-        if (ApiConfig.GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE") {
+        if (ApiConfig.GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE" || ApiConfig.GEMINI_API_KEY.isBlank()) {
             val errorMessage = ChatMessage(
-                text = "API key not configured. Please add your Gemini API key to use this feature.",
+                text = "API key not configured. Please add your Gemini API key to local.properties.",
                 isUser = false
             )
             chatAdapter.addMessage(errorMessage)
-            chatRecyclerView.scrollToPosition(messages.size - 1)
+            binding.sendButton.isEnabled = true
+            binding.messageInput.isEnabled = true
             return
         }
 
-        // Get AI response using direct HTTP API
+        // Get AI response
         lifecycleScope.launch {
             try {
                 val aiResponse = getGeminiResponse(userMessage)
@@ -111,22 +119,28 @@ class AIAssistantFragment : Fragment() {
                 chatRecyclerView.scrollToPosition(messages.size - 1)
             } catch (e: Exception) {
                 Log.e("AIAssistant", "Error: ${e.message}", e)
-                val errorMessage = ChatMessage(
-                    text = "Sorry, I encountered an error. Please try again.",
-                    isUser = false
-                )
+                val statusMessage = if (e.message?.contains("429") == true) {
+                    "Rate limit reached. Please wait 60 seconds before sending another message."
+                } else {
+                    "Sorry, I encountered an error. Please check your internet connection or API key."
+                }
+                val errorMessage = ChatMessage(text = statusMessage, isUser = false)
                 chatAdapter.addMessage(errorMessage)
                 chatRecyclerView.scrollToPosition(messages.size - 1)
+            } finally {
+                // Re-enable input
+                binding.sendButton.isEnabled = true
+                binding.messageInput.isEnabled = true
             }
         }
     }
 
     private suspend fun getGeminiResponse(userMessage: String): String = withContext(Dispatchers.IO) {
         try {
-            // Using v1beta endpoint with gemini-2.5-flash (specifically verified available for this key)
-            val url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${ApiConfig.GEMINI_API_KEY}"
+            // Using v1beta endpoint with gemini-1.5-flash (more stable for free tier)
+            val url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${ApiConfig.GEMINI_API_KEY}"
             
-            Log.d("AIAssistant", "Calling Gemini API...")
+            Log.d("AIAssistant", "Calling Gemini API via HTTP...")
             
             val jsonBody = JSONObject().apply {
                 put("contents", JSONArray().apply {
