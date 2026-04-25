@@ -274,6 +274,38 @@
                         android:lineSpacingExtra="4dp"
                         android:textColor="#444444" />
 
+                    <!-- Recommendation Box -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/bg_floating_nav"
+                        android:backgroundTint="#F8FAFC"
+                        android:padding="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🛡️ RECOMMENDATION"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="#64748B"
+                            android:letterSpacing="0.05" />
+
+                        <TextView
+                            android:id="@+id/tvFraudRecommendation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="Protect your personal data by following these steps."
+                            android:textSize="14sp"
+                            android:textStyle="italic"
+                            android:textColor="#1E293B"
+                            android:lineSpacingExtra="2dp" />
+                    </LinearLayout>
+
                     <!-- Divider -->
                     <View
                         android:layout_width="match_parent"

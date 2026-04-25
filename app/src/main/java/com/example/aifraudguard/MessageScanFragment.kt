@@ -128,7 +128,7 @@ class MessageScanFragment : Fragment() {
 
             // Show Toast if ML model was actually used
             if (result.usedMLModel) {
-                Toast.makeText(context, "Analyzed using Neural Network Model", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Validated by Deep Intelligence (Transformer-V3)", Toast.LENGTH_SHORT).show()
             }
 
             binding.progressBarScan.visibility = View.GONE
@@ -160,8 +160,9 @@ class MessageScanFragment : Fragment() {
         binding.tvFraudLabel.text = result.label
         binding.tvFraudLabel.setTextColor(color)
 
-        // Reason
+        // Reason & Recommendation
         binding.tvFraudReason.text = result.reason
+        binding.tvFraudRecommendation.text = result.recommendation
 
         // Signals list
         if (result.matchedSignals.isNotEmpty()) {

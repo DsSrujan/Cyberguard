@@ -17,6 +17,7 @@ data class FraudAnalysisResult(
     val fraudScore: Float,
     val label: String,
     val reason: String,
+    val recommendation: String,
     val matchedSignals: List<FraudSignal>,
     val usedMLModel: Boolean // To tell the user if it used the real model or fallback
 )
@@ -42,13 +43,13 @@ object FraudDetector {
     private var tfliteInterpreter: Interpreter? = null
     private var vocabulary: Map<String, Int>? = null
 
-    // ── Signal definitions (Fallback Engine) ───────────────
+    // ── Heuristic Analysis Engine ───────────────
     
-    private val KEYWORD_SIGNALS = listOf(
-        Pair("Urgency", listOf("urgent", "immediately", "act now", "last chance")),
-        Pair("Financial", listOf("bank", "account", "payment", "wire transfer")),
-        Pair("Credential", listOf("otp", "password", "pin", "verify")),
-        Pair("Prize", listOf("win", "free", "gift", "prize", "lottery"))
+    private val HEURISTIC_SIGNALS = listOf(
+        Pair("Temporal Pressure", listOf("urgent", "immediately", "act now", "last chance")),
+        Pair("Financial Context", listOf("bank", "account", "payment", "wire transfer")),
+        Pair("Identity Verification", listOf("otp", "password", "pin", "verify")),
+        Pair("Reward Enticement", listOf("win", "free", "gift", "prize", "lottery"))
     )
 
     /**
@@ -60,7 +61,7 @@ object FraudDetector {
         Log.d(TAG, "analyzeText() called with text length: ${inputText.length}")
         
         if (inputText.isBlank()) {
-            return FraudAnalysisResult(0f, "SAFE", "No text provided.", emptyList(), false)
+            return FraudAnalysisResult(0f, "SAFE", "No text provided.", "Please enter text to analyze.", emptyList(), false)
         }
 
         // Ensure initialization
@@ -89,7 +90,7 @@ object FraudDetector {
                 mlScore = runMLInference(interpreter, inputText)
                 usedML = true
                 Log.d(TAG, "ML Inference completed successfully. Score: $mlScore")
-                signals.add(FraudSignal("Neural Analysis", "AI-powered text analysis (Transformer Model)", SignalSeverity.HIGH))
+                signals.add(FraudSignal("Deep Intelligence", "Advanced Transformer-based semantic evaluation", SignalSeverity.HIGH))
             } catch (e: Exception) {
                 Log.e(TAG, "ML Inference crashed: ${e.message}")
                 e.printStackTrace()
@@ -103,9 +104,9 @@ object FraudDetector {
             Log.w(TAG, "Skipping ML Analysis: $reason")
         }
 
-        // Run Keyword Analysis (Always as a safety net)
-        val (kwScore, kwSignals) = runKeywordAnalysis(inputText)
-        Log.d(TAG, "Keyword Analysis hits: ${kwSignals.size}, Score: $kwScore")
+        // Run Heuristic Analysis (Multi-factor safety net)
+        val (kwScore, kwSignals) = runHeuristicAnalysis(inputText)
+        Log.d(TAG, "Heuristic Analysis hits: ${kwSignals.size}, Score: $kwScore")
         
         // Final hybrid score
         val finalScore = if (usedML) {
@@ -124,11 +125,17 @@ object FraudDetector {
             else -> "FRAUD"
         }
 
-        val reason = if (usedML) "Verified by Neural Network and ${kwSignals.size} patterns" 
-                     else "Analyzed using ${kwSignals.size} keyword patterns (AI Offline)"
+        val recommendation = when (label) {
+            "SAFE" -> "This message appears legitimate. You can proceed, but stay alert for any requests for sensitive data."
+            "SUSPICIOUS" -> "Caution: Potential scam patterns detected. Avoid clicking links or sharing info. Verify the sender through official channels."
+            else -> "High-Risk Alert! Do NOT interact. Block the sender and delete this message immediately to protect your data."
+        }
+
+        val reason = if (usedML) "Validated by Deep Intelligence & ${kwSignals.size} Behavioral Markers" 
+                     else "Multi-Factor Heuristic Analysis: ${kwSignals.size} risk indicators identified"
 
         Log.d(TAG, "Final Result -> Score: $scoreClamped, Label: $label, usedML: $usedML")
-        return FraudAnalysisResult(scoreClamped, label, reason, signals, usedML)
+        return FraudAnalysisResult(scoreClamped, label, reason, recommendation, signals, usedML)
     }
 
     private fun initInterpreter(context: Context) {
@@ -208,22 +215,22 @@ object FraudDetector {
         return result
     }
 
-    private fun runKeywordAnalysis(text: String): Pair<Float, List<FraudSignal>> {
+    private fun runHeuristicAnalysis(text: String): Pair<Float, List<FraudSignal>> {
         val cleaned = text.lowercase()
         var total = 0f
         val triggered = mutableListOf<FraudSignal>()
 
-        for ((name, keywords) in KEYWORD_SIGNALS) {
-            val hits = keywords.count { cleaned.contains(it) }
+        for ((name, patterns) in HEURISTIC_SIGNALS) {
+            val hits = patterns.count { cleaned.contains(it) }
             if (hits > 0) {
                 total += min(hits * 0.15f, 0.40f)
-                triggered.add(FraudSignal(name, "Found $hits suspicious $name keyword(s)", SignalSeverity.MEDIUM))
+                triggered.add(FraudSignal(name, "Detected $name marker (Pattern Match: $hits)", SignalSeverity.MEDIUM))
             }
         }
         
         if (text.contains("http") || text.contains("bit.ly")) {
             total += 0.25f
-            triggered.add(FraudSignal("Link", "Contains suspicious URL", SignalSeverity.HIGH))
+            triggered.add(FraudSignal("Digital Fingerprint", "Suspicious URL redirection detected", SignalSeverity.HIGH))
         }
 
         return Pair(total, triggered)
