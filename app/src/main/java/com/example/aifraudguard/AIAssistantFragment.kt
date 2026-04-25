@@ -130,18 +130,20 @@ class AIAssistantFragment : Fragment() {
             
             val jsonBody = JSONObject().apply {
                 put("contents", JSONArray().apply {
+                    // System Instruction injected as first part of prompt
+                    put(JSONObject().apply {
+                        put("parts", JSONArray().apply {
+                            put(JSONObject().apply {
+                                put("text", "You are FraudGuard Assist, an AI specialized in cybercrime prevention and scam detection. Provide helpful, concise responses about fraud prevention and cybersecurity.")
+                            })
+                        })
+                    })
+                    // User message
                     put(JSONObject().apply {
                         put("parts", JSONArray().apply {
                             put(JSONObject().apply {
                                 put("text", userMessage)
                             })
-                        })
-                    })
-                })
-                put("systemInstruction", JSONObject().apply {
-                    put("parts", JSONArray().apply {
-                        put(JSONObject().apply {
-                            put("text", "You are FraudGuard Assist, an AI specialized in cybercrime prevention and scam detection. Provide helpful, concise responses about fraud prevention and cybersecurity.")
                         })
                     })
                 })
