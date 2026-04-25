@@ -123,22 +123,22 @@ class AIAssistantFragment : Fragment() {
 
     private suspend fun getGeminiResponse(userMessage: String): String = withContext(Dispatchers.IO) {
         try {
-            // Using v1 stable API endpoint with gemini-1.5-flash model
-            val url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${ApiConfig.GEMINI_API_KEY}"
+            // Using v1beta endpoint with gemini-pro (most universally compatible model)
+            val url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${ApiConfig.GEMINI_API_KEY}"
             
             Log.d("AIAssistant", "Calling Gemini API...")
             
             val jsonBody = JSONObject().apply {
                 put("contents", JSONArray().apply {
-                    // System Instruction injected as first part of prompt
+                    // System Instruction as a first message part
                     put(JSONObject().apply {
                         put("parts", JSONArray().apply {
                             put(JSONObject().apply {
-                                put("text", "You are FraudGuard Assist, an AI specialized in cybercrime prevention and scam detection. Provide helpful, concise responses about fraud prevention and cybersecurity.")
+                                put("text", "You are FraudGuard Assist, a cybercrime prevention AI. Provide helpful, concise responses about fraud prevention and cybersecurity.")
                             })
                         })
                     })
-                    // User message
+                    // User Message
                     put(JSONObject().apply {
                         put("parts", JSONArray().apply {
                             put(JSONObject().apply {
