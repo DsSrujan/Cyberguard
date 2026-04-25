@@ -160,8 +160,11 @@ class MessageScanFragment : Fragment() {
         binding.tvFraudLabel.text = result.label
         binding.tvFraudLabel.setTextColor(color)
 
-        // Reason
-        binding.tvFraudReason.text = result.reason
+        // Smart contextual advice (replaces generic keyword-count text)
+        val advice = buildAdvice(result)
+        binding.tvFraudReason.text = advice
+        binding.tvFraudReason.setTextColor(color)
+        binding.tvFraudReason.setTypeface(null, android.graphics.Typeface.ITALIC)
 
         // Signals list
         if (result.matchedSignals.isNotEmpty()) {
@@ -206,6 +209,37 @@ class MessageScanFragment : Fragment() {
             .translationY(0f)
             .setDuration(450)
             .start()
+    }
+
+    private fun buildAdvice(result: FraudAnalysisResult): String {
+        val signals = result.matchedSignals.map { it.name.lowercase() }
+
+        return when (result.label) {
+            "FRAUD" -> when {
+                signals.any { it.contains("financial") || it.contains("bank") } ->
+                    "⚠️ This looks like a Financial Fraud attempt. Do NOT share your bank account, OTP, or UPI PIN with anyone — no bank ever asks for this."
+                signals.any { it.contains("link") || it.contains("url") } ->
+                    "⚠️ This message contains a suspicious link. Do NOT click it — it may install malware or steal your credentials."
+                signals.any { it.contains("prize") || it.contains("lottery") || it.contains("winner") } ->
+                    "⚠️ This is a Lottery Scam. You have not won anything. Ignore and delete this message immediately."
+                signals.any { it.contains("urgency") || it.contains("deadline") } ->
+                    "⚠️ This message creates fake urgency to pressure you. Scammers use this tactic. Do not act on it."
+                signals.any { it.contains("impersonation") || it.contains("official") } ->
+                    "⚠️ This appears to impersonate an official organization (bank, govt, etc.). Verify directly through the official website."
+                else ->
+                    "⚠️ This message has strong indicators of fraud. Do not respond, click links, or share any personal information."
+            }
+            "SUSPICIOUS" -> when {
+                signals.any { it.contains("financial") || it.contains("money") } ->
+                    "⚠️ This message references financial information in an unusual way. Proceed with caution and verify with the sender independently."
+                signals.any { it.contains("link") || it.contains("url") } ->
+                    "⚠️ This message contains a link that may be risky. If you did not expect this, do not click it."
+                else ->
+                    "⚠️ This message shows suspicious patterns. Be cautious — verify with the sender before taking any action."
+            }
+            else ->
+                "✅ This message appears to be safe. No significant fraud indicators were detected. Always stay alert when sharing personal information."
+        }
     }
 
     private fun resetUI() {

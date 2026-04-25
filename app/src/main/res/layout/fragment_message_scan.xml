@@ -205,11 +205,12 @@
 
                         <com.google.android.material.progressindicator.CircularProgressIndicator
                             android:id="@+id/fraudScoreRing"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:indicatorSize="140dp"
-                            app:trackThickness="12dp"
-                            app:trackColor="#EEEEEE"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_gravity="center"
+                            app:indicatorSize="120dp"
+                            app:trackThickness="8dp"
+                            app:trackColor="#F1F5F9"
                             app:indicatorColor="#10B981"
                             android:max="100"
                             android:progress="0" />
