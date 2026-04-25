@@ -45,16 +45,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
         viewBinding = true
         buildConfig = true
+        mlModelBinding = false
     }
     // ❌ The old composeOptions block has been removed as it conflicts
     // with the new kotlin.compose plugin.
@@ -93,6 +94,11 @@ dependencies {
     
     // ViewPager2 for swipeable pages
     implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+    // TensorFlow Lite for local ML Model execution
+    implementation("org.tensorflow:tensorflow-lite:2.14.0")
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
+    implementation("org.tensorflow:tensorflow-lite-metadata:0.4.4")
 
     // --- Existing Dependencies (Correct for Compose) ---
     implementation(libs.androidx.core.ktx)
