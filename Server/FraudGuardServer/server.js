@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -7,14 +6,15 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const speech = require('@google-cloud/speech');
+require('dotenv').config();
 
 // --- CONFIGURATION ---
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID || '';
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN || '';
-const TWILIO_VERIFY_SERVICE_SID = process.env.TWILIO_VERIFY_SERVICE_SID || ''; 
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_VERIFY_SERVICE_SID = process.env.TWILIO_VERIFY_SERVICE_SID; 
 
-// GOOGLE CLOUD SETUP
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY || '';
+// GOOGLE CLOUD SETUP (Reverted to your working style)
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const speechClient = new speech.SpeechClient({
     apiKey: GOOGLE_API_KEY
 });
@@ -92,9 +92,9 @@ wssApp.on('connection', (ws) => {
 });
 
 // --- Twilio Call WebSocket Logic (GOOGLE AI) ---
+// --- Twilio Call WebSocket Logic (GOOGLE AI) ---
 wssTwilio.on('connection', (ws) => {
     console.log('Node.js: Twilio Media Stream WebSocket established.');
-
     let recognizeStream = null;
 
     ws.on('message', async (message) => {
@@ -103,7 +103,6 @@ wssTwilio.on('connection', (ws) => {
 
             if (msg.event === 'start') {
                 console.log('Node.js: Twilio media stream started (Google AI).');
-
                 const request = {
                     config: {
                         encoding: 'MULAW',
@@ -113,17 +112,14 @@ wssTwilio.on('connection', (ws) => {
                     interimResults: true,
                 };
 
-                // Initialize Google Stream
                 recognizeStream = speechClient
                     .streamingRecognize(request)
-                    .on('error', (err) => {
-                        console.error("❌ GOOGLE API ERROR:", err.message);
-                    })
+                    .on('error', (err) => console.error("❌ GOOGLE API ERROR:", err.message))
                     .on('data', async (data) => {
                         if (data.results[0] && data.results[0].alternatives[0]) {
                             const transcript = data.results[0].alternatives[0].transcript;
-                            
-                            // Process only final results for stability
+                            console.log(`Listening: ${transcript}`);
+
                             if (data.results[0].isFinal && transcript.length > 5) {
                                 console.log(`Google Heard: ${transcript}`);
                                 try {
@@ -132,35 +128,37 @@ wssTwilio.on('connection', (ws) => {
 
                                     if (analysis.fraud_score > FRAUD_THRESHOLD) {
                                         console.log(`!!! FRAUD DETECTED: ${analysis.scam_type_name} !!!`);
+                                        
                                         if (androidAppWs && androidAppWs.readyState === WebSocket.OPEN) {
-                                            androidAppWs.send(JSON.stringify({ 
+                                            // 🚨 THE FIX IS HERE 🚨
+                                            // We map 'report_summary' from Python to 'reason' for the Android Overlay
+                                            const alertPayload = { 
                                                 type: "fraud_alert", 
-                                                reason: analysis.report_summary, 
-                                                ...analysis 
-                                            }));
+                                                scam_type: analysis.scam_type_name,
+                                                reason: analysis.report_summary, // This fills the red box
+                                                score: analysis.fraud_score,
+                                                educational_info: analysis.educational_summary
+                                            };
+                                            
+                                            androidAppWs.send(JSON.stringify(alertPayload));
+                                            console.log("✅ Summary sent to Overlay:", analysis.report_summary);
                                         }
                                     }
-                                } catch (e) { console.error("Python API Error - Is Laptop A running?"); }
+                                } catch (e) { console.error("Python AI Predictor Offline"); }
                             }
                         }
                     });
             }
 
             if (msg.event === 'media' && recognizeStream) {
-                // Pipe base64 payload to Google
                 recognizeStream.write(msg.media.payload);
             }
-        } catch (err) {
-            // Silence JSON parse errors during binary stream data
-        }
+        } catch (err) {}
     });
 
     ws.on('close', () => {
         console.log('Node.js: Twilio Media Stream WebSocket closed.');
-        if (recognizeStream) {
-            recognizeStream.end();
-            recognizeStream = null;
-        }
+        if (recognizeStream) recognizeStream.end();
     });
 });
 
@@ -196,14 +194,25 @@ app.post('/verify-otp', async (req, res) => {
     } catch (error) { res.status(500).json({ error: error.message }); }
 });
 
-// --- API ENDPOINTS ---
-app.post('/predict', async (req, res) => {
-    try {
-        const response = await axios.post(PYTHON_API_URL, { text: req.body.text });
-        res.status(200).json(response.data);
-    } catch (e) { res.status(500).send("AI Error"); }
+// --- API PROXY ROUTE (LINK INSPECTOR) ---
+app.post('/check-url', (req, res) => {
+    const options = {
+        hostname: '127.0.0.1',
+        port: 8000,
+        path: '/check-url',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    };
+    const proxyReq = http.request(options, (pRes) => {
+        res.writeHead(pRes.statusCode, pRes.headers);
+        pRes.pipe(res, { end: true });
+    });
+    proxyReq.on('error', () => res.status(500).json({ error: "Link Inspector Offline." }));
+    proxyReq.write(JSON.stringify(req.body));
+    proxyReq.end();
 });
 
+// --- STANDARD ENDPOINTS ---
 app.post('/report-scam', async (req, res) => {
     try {
         const newReport = new Report(req.body);
@@ -217,32 +226,6 @@ app.get('/get-reports', async (req, res) => {
         const reports = await Report.find({});
         res.status(200).json(reports);
     } catch (e) { res.status(500).send("DB Error"); }
-});
-
-// --- PYTHON API PROXY ROUTE (LINK INSPECTOR) ---
-app.post('/check-url', (req, res) => {
-    const options = {
-        hostname: '127.0.0.1',
-        port: 8000,
-        path: '/check-url',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-
-    const proxyReq = http.request(options, (proxyRes) => {
-        res.writeHead(proxyRes.statusCode, proxyRes.headers);
-        proxyRes.pipe(res, { end: true });
-    });
-
-    proxyReq.on('error', (e) => {
-        console.error(`Python backend proxy error: ${e.message}`);
-        res.status(500).json({ error: "Failed to connect to Link Inspector backend." });
-    });
-
-    proxyReq.write(JSON.stringify(req.body));
-    proxyReq.end();
 });
 
 server.listen(port, () => console.log(`✅ FraudGuard Server is running on http://localhost:${port}`));
