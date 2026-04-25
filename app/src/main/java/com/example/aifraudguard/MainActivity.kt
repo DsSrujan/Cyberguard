@@ -70,6 +70,8 @@ class MainActivity : AppCompatActivity() {
         
         // Load profile photo into the top-right header icon
         AuthHelper.getCurrentUser()?.photoUrl?.let { photoUrl ->
+            // Clear tint so the photo isn't covered by the default white/gray tint
+            binding.profileIcon.imageTintList = null
             com.bumptech.glide.Glide.with(this)
                 .load(photoUrl)
                 .placeholder(R.drawable.ic_person)

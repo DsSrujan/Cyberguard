@@ -165,7 +165,7 @@
                         android:textColor="@android:color/white"
                         android:textSize="16sp"
                         app:cornerRadius="12dp"
-                        android:backgroundTint="#6200EE" />
+                        android:backgroundTint="@color/primary" />
 
                     <!-- Loading spinner -->
                     <ProgressBar
@@ -311,7 +311,7 @@
                         android:layout_marginTop="24dp"
                         android:padding="8dp"
                         android:text="SCAN ANOTHER MESSAGE"
-                        android:textColor="#1976D2"
+                        android:textColor="@color/primary"
                         android:textStyle="bold"
                         android:textSize="14sp"
                         android:clickable="true"
