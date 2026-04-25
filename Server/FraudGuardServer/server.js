@@ -11,7 +11,7 @@ require('dotenv').config();
 // --- CONFIGURATION ---
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-const TWILIO_VERIFY_SERVICE_SID = process.env.TWILIO_VERIFY_SERVICE_SID; 
+const TWILIO_VERIFY_SERVICE_SID = process.env.TWILIO_VERIFY_SERVICE_SID;
 
 // GOOGLE CLOUD SETUP (Reverted to your working style)
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
@@ -20,11 +20,11 @@ const speechClient = new speech.SpeechClient({
 });
 
 // Initialize Twilio Client
-const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN); 
+const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 // --- DATABASE & API CONFIG ---
 const MONGO_URI = 'mongodb://localhost:27017/fraudguard';
-const PYTHON_API_URL = 'http://127.0.0.1:5000/predict'; 
+const PYTHON_API_URL = 'http://127.0.0.1:5000/predict';
 const FRAUD_THRESHOLD = 0.7;
 
 // --- SERVER SETUP ---
@@ -85,8 +85,8 @@ wssApp.on('connection', (ws) => {
             }
         } catch (e) { console.error("Error parsing App message"); }
     });
-    ws.on('close', () => { 
-        androidAppWs = null; 
+    ws.on('close', () => {
+        androidAppWs = null;
         console.log('Node.js: Android App disconnected.');
     });
 });
@@ -128,18 +128,18 @@ wssTwilio.on('connection', (ws) => {
 
                                     if (analysis.fraud_score > FRAUD_THRESHOLD) {
                                         console.log(`!!! FRAUD DETECTED: ${analysis.scam_type_name} !!!`);
-                                        
+
                                         if (androidAppWs && androidAppWs.readyState === WebSocket.OPEN) {
                                             // 🚨 THE FIX IS HERE 🚨
                                             // We map 'report_summary' from Python to 'reason' for the Android Overlay
-                                            const alertPayload = { 
-                                                type: "fraud_alert", 
+                                            const alertPayload = {
+                                                type: "fraud_alert",
                                                 scam_type: analysis.scam_type_name,
                                                 reason: analysis.report_summary, // This fills the red box
                                                 score: analysis.fraud_score,
                                                 educational_info: analysis.educational_summary
                                             };
-                                            
+
                                             androidAppWs.send(JSON.stringify(alertPayload));
                                             console.log("✅ Summary sent to Overlay:", analysis.report_summary);
                                         }
@@ -153,7 +153,7 @@ wssTwilio.on('connection', (ws) => {
             if (msg.event === 'media' && recognizeStream) {
                 recognizeStream.write(msg.media.payload);
             }
-        } catch (err) {}
+        } catch (err) { }
     });
 
     ws.on('close', () => {
