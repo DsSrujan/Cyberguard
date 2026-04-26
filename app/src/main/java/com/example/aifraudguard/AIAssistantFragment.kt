@@ -88,7 +88,7 @@ class AIAssistantFragment : Fragment() {
     private fun sendMessage(userMessage: String) {
         if (userMessage.isBlank()) return
 
-        // Disable input to prevent spam (429 errors)
+        // Disable input during processing
         sendButton.isEnabled = false
         messageInput.isEnabled = false
 
@@ -98,40 +98,39 @@ class AIAssistantFragment : Fragment() {
         chatRecyclerView.scrollToPosition(messages.size - 1)
         messageInput.setText("")
 
-        // Check if API key is configured
-        if (ApiConfig.GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE" || ApiConfig.GEMINI_API_KEY.isBlank()) {
-            val errorMessage = ChatMessage(
-                text = "API key not configured. Please add your Gemini API key to local.properties.",
-                isUser = false
-            )
-            chatAdapter.addMessage(errorMessage)
+        lifecycleScope.launch {
+            val response = withContext(Dispatchers.IO) {
+                // Try Gemini API first if key is configured
+                val apiKey = ApiConfig.GEMINI_API_KEY
+                if (apiKey.isNotBlank() && apiKey != "YOUR_GEMINI_API_KEY_HERE") {
+                    try {
+                        val geminiResponse = getGeminiResponse(userMessage)
+                        // If Gemini returns an error message, fall back to local
+                        if (geminiResponse.startsWith("Error") || geminiResponse.startsWith("Sorry") ||
+                            geminiResponse.contains("429") || geminiResponse.contains("403") ||
+                            geminiResponse.contains("404") || geminiResponse.contains("400")) {
+                            FraudChatBot.getResponse(userMessage)
+                        } else {
+                            geminiResponse
+                        }
+                    } catch (e: Exception) {
+                        // Silently fall back to local bot on any error
+                        Log.w("AIAssistant", "Gemini failed, using local bot: ${e.message}")
+                        FraudChatBot.getResponse(userMessage)
+                    }
+                } else {
+                    // No API key — use local bot directly
+                    FraudChatBot.getResponse(userMessage)
+                }
+            }
+
+            val aiMessage = ChatMessage(text = response, isUser = false)
+            chatAdapter.addMessage(aiMessage)
+            chatRecyclerView.scrollToPosition(messages.size - 1)
+
+            // Re-enable input
             sendButton.isEnabled = true
             messageInput.isEnabled = true
-            return
-        }
-
-        // Get AI response
-        lifecycleScope.launch {
-            try {
-                val aiResponse = getGeminiResponse(userMessage)
-                val aiMessage = ChatMessage(text = aiResponse, isUser = false)
-                chatAdapter.addMessage(aiMessage)
-                chatRecyclerView.scrollToPosition(messages.size - 1)
-            } catch (e: Exception) {
-                Log.e("AIAssistant", "Error: ${e.message}", e)
-                val statusMessage = if (e.message?.contains("429") == true) {
-                    "Rate limit reached. Please wait 60 seconds before sending another message."
-                } else {
-                    "Sorry, I encountered an error. Please check your internet connection or API key."
-                }
-                val errorMessage = ChatMessage(text = statusMessage, isUser = false)
-                chatAdapter.addMessage(errorMessage)
-                chatRecyclerView.scrollToPosition(messages.size - 1)
-            } finally {
-                // Re-enable input
-                sendButton.isEnabled = true
-                messageInput.isEnabled = true
-            }
         }
     }
 
