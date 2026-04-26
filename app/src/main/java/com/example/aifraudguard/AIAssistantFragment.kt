@@ -138,7 +138,7 @@ class AIAssistantFragment : Fragment() {
     private suspend fun getGeminiResponse(userMessage: String): String = withContext(Dispatchers.IO) {
         try {
             // Using v1beta endpoint with gemini-1.5-flash (more stable for free tier)
-            val url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${ApiConfig.GEMINI_API_KEY}"
+            val url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${ApiConfig.GEMINI_API_KEY}"
             
             Log.d("AIAssistant", "Calling Gemini API via HTTP...")
             
